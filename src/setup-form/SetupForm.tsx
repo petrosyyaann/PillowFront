@@ -68,12 +68,12 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
             </div>
 
             <div className={styles.field}>
-                <label className={styles.label}>Линия (0.01–0.5):</label>
+                <label className={styles.label}>Линия (0.01–1):</label>
                 <input
                     type="number"
                     step={0.01}
                     min={0.01}
-                    max={0.1}
+                    max={1}
                     value={line}
                     onChange={e => setLine(+e.target.value)}
                     className={styles.input}

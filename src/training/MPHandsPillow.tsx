@@ -15,6 +15,7 @@ import { drawConnectors, drawLandmarks, lerp } from '@mediapipe/drawing_utils';
 import { Camera } from '@mediapipe/camera_utils';
 import { calcAngle, calcDist, getCoords, makeSuggestHandsApartWithLine } from '../utils';
 import { useIsMobile } from '../utils/useIsMobile';
+import doneSound from '../sounds/done.mp3'
 
 export interface MPHandsPillowProps {
   degree: number;
@@ -43,6 +44,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const pausedRef = useRef(paused);
+  const doneAudioRef = useRef<HTMLAudioElement>(new Audio(doneSound));
   useEffect(() => { pausedRef.current = paused }, [paused]);
 
   const webcamRef = useRef<Webcam>(null)
@@ -335,6 +337,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
           counterCondition = true
           // addCount()
           onCount()
+          doneAudioRef.current.play()
           exerciseCompletedRef.current = true
           // setSuggest('')
           // onSuggest('')
