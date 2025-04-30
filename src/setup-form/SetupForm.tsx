@@ -44,11 +44,11 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
                 />
             </div>
             <div className={styles.field}>
-                <label className={styles.label}>Угол (40–100°):</label>
+                <label className={styles.label}>Угол (10–180°):</label>
                 <input
                     type="number"
-                    min={40}
-                    max={100}
+                    min={0}
+                    max={180}
                     value={angle}
                     onChange={e => setAngle(+e.target.value)}
                     className={styles.input}
@@ -60,7 +60,7 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
                 <label className={styles.label}>Время (сек):</label>
                 <input
                     type="number"
-                    min={5}
+                    min={0}
                     value={duration}
                     onChange={e => setDuration(+e.target.value)}
                     className={styles.input}
@@ -73,7 +73,7 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
                     type="number"
                     step={0.01}
                     min={0.01}
-                    max={0.5}
+                    max={0.1}
                     value={line}
                     onChange={e => setLine(+e.target.value)}
                     className={styles.input}
