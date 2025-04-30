@@ -18,6 +18,5 @@ export default defineConfig({
             ],
         }),
     ],
-    base: '/',
-    // base: '/PillowFront/',
+    base: '/PillowFront/',
 })

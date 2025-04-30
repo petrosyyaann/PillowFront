@@ -82,7 +82,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   useEffect(() => {
     console.log(Holistic)
     const holistic = new Holistic({
-      locateFile: (file) => `/static/${file}`,
+      locateFile: (file) => `/PillowFront/static/${file}`,
     })
 
     holistic.setOptions({
