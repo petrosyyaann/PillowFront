@@ -18,5 +18,5 @@ export default defineConfig({
             ],
         }),
     ],
-    base: 'https://github.com/petrosyyaann/PillowFront',
+    base: '/PillowFront/',
 })

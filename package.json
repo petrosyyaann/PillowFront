@@ -9,7 +9,7 @@
         "lint": "eslint .",
         "preview": "vite preview",
         "predeploy": "tsc -b && vite build",
-        "deploy": "gh-pages -d build"
+        "deploy": "gh-pages -d dist"
     },
     "dependencies": {
         "@mediapipe/camera_utils": "^0.3.1675466862",
