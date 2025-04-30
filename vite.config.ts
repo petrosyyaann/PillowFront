@@ -8,17 +8,7 @@ import path from 'path'
 export default defineConfig({
     plugins: [
         react(),
-        mediapipe({
-            'holistic.js': [
-                'VERSION',
-                'Holistic',
-                'POSE_LANDMARKS',
-                'POSE_CONNECTIONS',
-                'HAND_CONNECTIONS',
-                'POSE_LANDMARKS_LEFT',
-                'POSE_LANDMARKS_RIGHT',
-            ],
-        }),
+        mediapipe(),
         viteStaticCopy({
             targets: [
                 {
@@ -28,5 +18,6 @@ export default defineConfig({
             ],
         }),
     ],
-    base: '/PillowFront/',
+    base: '/',
+    // base: '/PillowFront/',
 })

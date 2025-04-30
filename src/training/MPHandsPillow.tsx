@@ -15,7 +15,6 @@ import { drawConnectors, drawLandmarks, lerp } from '@mediapipe/drawing_utils';
 import { Camera } from '@mediapipe/camera_utils';
 import { calcAngle, calcDist, getCoords, makeSuggestHandsApartWithLine } from '../utils';
 
-// Props for MPHandsPillow component
 export interface MPHandsPillowProps {
   degree: number;
   line: number;
@@ -81,8 +80,9 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   let rAngle = 0
 
   useEffect(() => {
+    console.log(Holistic)
     const holistic = new Holistic({
-      locateFile: (file) => `/PillowFront/static/${file}`,
+      locateFile: (file) => `/static/${file}`,
     })
 
     holistic.setOptions({
