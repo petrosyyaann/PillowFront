@@ -116,7 +116,9 @@ const App = () => {
   // Во время сессии
   return (
     <div className={styles.container}>
-      <div className={styles.headerBar}>
+      <div style={{
+        paddingTop: isMobile ? '50px' : '0'
+      }} className={styles.headerBar}>
         <div className={styles.headerBarButtons}>
           <button
             className={styles.resetBtn}
@@ -169,7 +171,9 @@ const App = () => {
         )}
       </div>
 
-      <div className={styles.bottomPanel}>
+      <div style={{
+        marginBottom: isMobile ? '70px' : '0'
+      }} className={styles.bottomPanel}>
         <p className={styles.instruction}>
           <strong>Инструкция:</strong> {instruction}
         </p>
