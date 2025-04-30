@@ -95,7 +95,7 @@ body {
     margin-bottom: 1rem;
 }
 
-.metronomeEditor{
+.metronomeEditor {
     position: absolute;
     top: 0;
     right: 20px;
@@ -143,4 +143,50 @@ body {
 .resetBtn:disabled {
     background: #ccc;
     cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+    .headerBar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .headerBarButtons {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .timer {
+        font-size: 1rem;
+    }
+
+    .mpContainer {
+        flex-direction: column;
+        margin-bottom: 0.5rem;
+    }
+
+    .metronomeEditor {
+        position: static;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .bottomPanel {
+        padding: 0.5rem;
+    }
+
+    .instruction,
+    .suggest {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        margin: 0.5rem 0;
+    }
+
+    .button,
+    .resetBtn {
+        width: 100%;
+        text-align: center;
+    }
 }

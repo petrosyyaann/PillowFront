@@ -9,9 +9,11 @@ import { PlayIcon } from "../icon/PlayIcon";
 import { ClockIcon } from "../icon/ClockIcon";
 import { PauseIcon } from "../icon/PauseIcon";
 import { exportPDF } from "./exportPDF";
+import { useIsMobile } from "../utils/useIsMobile";
 
 
 const App = () => {
+  const isMobile = useIsMobile();
   const [settings, setSettings] = useState<SessionSettings | null>(null);
   const [patientName, setPatientName] = useState<string>('');
   const [metroSettings, setMetroSettings] = useState<MetronomeSettingsValues>({
@@ -136,12 +138,14 @@ const App = () => {
             <span className={styles.timeValue}>{timeLeft}s</span>
           </div>
         </div>
-        <Metronome
-          paused={paused}
-          bpm={metroSettings.bpm}
-          strongBeat={metroSettings.strongBeat}
-          sound={metroSettings.sound}
-        />
+        {!isMobile && (
+          <Metronome
+            paused={paused}
+            bpm={metroSettings.bpm}
+            strongBeat={metroSettings.strongBeat}
+            sound={metroSettings.sound}
+          />
+        )}
       </div>
       <div className={styles.mpContainer}>
         <MPHandsPillow
@@ -154,7 +158,7 @@ const App = () => {
           onCount={onCount}
           onCountError={onCountError}
         />
-        {settings && paused && (
+        {settings && paused && !isMobile && (
           <div className={styles.metronomeEditor}>
             <MetronomeSettings
               values={metroSettings}

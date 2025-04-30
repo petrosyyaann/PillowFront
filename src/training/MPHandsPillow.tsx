@@ -14,6 +14,7 @@ import { createDeque } from '../utils/deq';
 import { drawConnectors, drawLandmarks, lerp } from '@mediapipe/drawing_utils';
 import { Camera } from '@mediapipe/camera_utils';
 import { calcAngle, calcDist, getCoords, makeSuggestHandsApartWithLine } from '../utils';
+import { useIsMobile } from '../utils/useIsMobile';
 
 export interface MPHandsPillowProps {
   degree: number;
@@ -43,7 +44,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   onCount,
   onCountError,
 }) => {
-
+  const isMobile = useIsMobile();
   const pausedRef = useRef(paused);
   useEffect(() => { pausedRef.current = paused }, [paused]);
 
@@ -122,8 +123,14 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
     if (pausedRef.current) return
     if (!canvasRef.current) return
 
-    const videoWidth = window.innerWidth - 600
-    const videoHeight = window.innerHeight - 300
+    const viewportW = window.innerWidth;
+    const viewportH = window.innerHeight;
+    const videoWidth = isMobile
+      ? viewportW
+      : viewportW - 600;
+    const videoHeight = isMobile
+      ? viewportH * 0.5
+      : viewportH - 300;
     const canvasElement = canvasRef.current
     const canvasCtx = canvasElement.getContext('2d')
 
@@ -398,13 +405,23 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   }
 
   return (
-    <canvas ref={canvasRef}>
-      <Webcam
-        audio={false}
-        mirrored={true}
-        ref={webcamRef}
-      />
-    </canvas>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: isMobile ? '100%' : '800px',
+        display: 'flex',
+        justifyContent: 'center',
+        position: 'relative',
+      }}
+    >
+      <canvas ref={canvasRef}>
+        <Webcam
+          audio={false}
+          mirrored={true}
+          ref={webcamRef}
+        />
+      </canvas>
+    </div>
   )
 }
 
