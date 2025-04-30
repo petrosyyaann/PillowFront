@@ -25,7 +25,6 @@ const App = () => {
   const [results, setResults] = useState<SessionResult[]>([]);
 
   const [instruction, setInstruction] = useState<string>("");
-  const [suggest, setSuggest] = useState<string>("");
   const [camError, setCamError] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
   const [errorsMap, setErrorsMap] = useState<Record<string, number>>({});
@@ -37,7 +36,6 @@ const App = () => {
   const handleStart = (opts: SessionSettings) => {
     setPaused(false);
     setInstruction("");
-    setSuggest("");
     setCamError(false);
     setCount(0);
     setErrorsMap({});
@@ -91,7 +89,6 @@ const App = () => {
   }, [timeLeft, settings, count, errorsMap]);
 
   const onInstruction = (text: string) => setInstruction(text);
-  const onSuggest = (text: string) => setSuggest(text);
   const onCameraError = () => setCamError(true);
   const onCount = () => setCount(c => c + 1);
   const onCountError = (err: string) => {
@@ -156,7 +153,6 @@ const App = () => {
           paused={paused}
           onInstruction={onInstruction}
           onCameraError={onCameraError}
-          onSuggest={onSuggest}
           onCount={onCount}
           onCountError={onCountError}
         />
@@ -176,9 +172,6 @@ const App = () => {
       }} className={styles.bottomPanel}>
         <p className={styles.instruction}>
           <strong>Инструкция:</strong> {instruction}
-        </p>
-        <p className={styles.suggest}>
-          <strong>Подсказка:</strong> {suggest}
         </p>
         {camError && <p className={styles.error}>Ошибка доступа к камере!</p>}
       </div>

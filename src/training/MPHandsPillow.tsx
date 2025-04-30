@@ -22,7 +22,6 @@ export interface MPHandsPillowProps {
   paused: boolean;
   onInstruction: (text: string) => void;
   onCameraError: () => void;
-  onSuggest: (text: string) => void;
   onCount: () => void;
   onCountError: (error: string) => void;
 }
@@ -31,7 +30,6 @@ const errorNames: Record<string, string> = {
   'Старайтесь не поднимать плечо': 'Raise Shoulder',
   'Старайтесь не наклонять голову': 'Tilt Head',
   'Старайтесь не наклоняться': 'Lean Forward',
-  'Старайтесь не сгибать руки': 'Bend Arms',
   'Старайтесь не отводить локти': 'Elbow Movement',
 };
 
@@ -40,7 +38,6 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   line,
   paused,
   onInstruction,
-  onSuggest,
   onCount,
   onCountError,
 }) => {
@@ -297,7 +294,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
           countedErrors.current.push(suggestedText)
         }
         // setSuggest(suggestedText)
-        onSuggest(suggestedText)
+        // onSuggest(suggestedText)
       }
 
       if (stage === 'Поднесите руку к точке' && currentHand) {
@@ -309,7 +306,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
           exerciseCompletedRef.current = false;
         } else {
           // setSuggest('При выполнении чередуйте руки');
-          onSuggest('При выполнении чередуйте руки')
+          // onSuggest('При выполнении чередуйте руки')
         }
       }
 
@@ -340,7 +337,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
           onCount()
           exerciseCompletedRef.current = true
           // setSuggest('')
-          onSuggest('')
+          // onSuggest('')
           countedErrors.current = []
           changeErrorRef.current = ''
           lastHandPositionRef.current = currentHand
