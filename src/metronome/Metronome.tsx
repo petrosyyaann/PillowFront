@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './Metronome.module.css';
 import clickSound from '../sounds/click.mp3';
 import beepSound from '../sounds/beep.mp3';
@@ -17,34 +17,39 @@ interface MetronomeProps {
     sound: keyof typeof SOUND_FILES;
 }
 
-export const Metronome: React.FC<MetronomeProps> = ({
-    paused,
-    bpm,
-    strongBeat,
-    sound,
-}) => {
-    const audioRef = useRef<HTMLAudioElement>(new Audio());
+export const Metronome: React.FC<MetronomeProps> = ({ paused, bpm, strongBeat, sound }) => {
+    const weakAudioRef = useRef<HTMLAudioElement>(new Audio());
+    const strongAudioRef = useRef<HTMLAudioElement>(new Audio());
+    const [isStrongPulse, setIsStrongPulse] = useState(false);
 
+    // Разблокировка аудио на первом клике пользователя
     useEffect(() => {
         const unlock = () => {
-            audioRef.current.volume = 0;
-            audioRef.current.currentTime = 0;
-            audioRef.current.play().then(() => {
-                audioRef.current.pause();
-                audioRef.current.volume = 0.5;
-            }).catch(() => { });
+            [weakAudioRef.current, strongAudioRef.current].forEach(audio => {
+                audio.volume = 0;
+                audio.currentTime = 0;
+                audio.play().then(() => {
+                    audio.pause();
+                    // Восстанавливаем уровни громкости
+                    weakAudioRef.current.volume = 0.5;
+                    strongAudioRef.current.volume = 1;
+                }).catch(() => { });
+            });
             window.removeEventListener('click', unlock);
         };
         window.addEventListener('click', unlock);
         return () => window.removeEventListener('click', unlock);
     }, []);
 
-    // При смене звука — меняем src и предзагружаем
+    // Предзагрузка звуков
     useEffect(() => {
-        const src = SOUND_FILES[sound] || SOUND_FILES.click;
-        audioRef.current.src = src;
-        audioRef.current.preload = 'auto';
-        audioRef.current.load();
+        weakAudioRef.current.src = SOUND_FILES[sound] || SOUND_FILES.click;
+        weakAudioRef.current.preload = 'auto';
+        weakAudioRef.current.load();
+
+        strongAudioRef.current.src = sound !== 'click' ? SOUND_FILES.click : SOUND_FILES.tick;
+        strongAudioRef.current.preload = 'auto';
+        strongAudioRef.current.load();
     }, [sound]);
 
     // Логика тика метронома
@@ -54,23 +59,24 @@ export const Metronome: React.FC<MetronomeProps> = ({
         let count = 0;
 
         const id = window.setInterval(() => {
-            count = 1;
-            // на сильной доле — громче
-            audioRef.current.volume = count % strongBeat === 0 ? 1 : 0.5;
-            audioRef.current.currentTime = 0;
-            audioRef.current
-                .play()
-                .catch(err => {
-                    if (err.name !== 'NotSupportedError') {
-                        console.error('Audio playback error:', err);
-                    }
-                });
+            count++;
+            const isStrong = count % strongBeat === 0;
+            setIsStrongPulse(isStrong);
+
+            const player = isStrong ? strongAudioRef.current : weakAudioRef.current;
+            player.volume = isStrong ? 1 : 0.5;
+            player.currentTime = 0;
+            player.play().catch(err => {
+                if (err.name !== 'NotSupportedError') {
+                    console.error('Audio playback error:', err);
+                }
+            });
         }, intervalMs);
 
         return () => void window.clearInterval(id);
     }, [paused, bpm, strongBeat, sound]);
 
-    // Используем CSS-переменную для синхронизации анимации пульса
+    // Интервал для CSS-анимации пульса
     const pulseInterval = `${60000 / Math.max(bpm, 1)}ms`;
 
     return (
@@ -78,12 +84,15 @@ export const Metronome: React.FC<MetronomeProps> = ({
             className={styles.wrapper}
             style={{ '--interval': pulseInterval } as React.CSSProperties}
         >
-            <div className={styles.pulse} aria-hidden="true" />
+            <div
+                className={`${styles.pulse} ${isStrongPulse ? styles.pulseStrong : ''}`}
+                aria-hidden="true"
+            />
             <div className={styles.info}>
                 <span className={styles.bpm}>
                     {bpm}<small>BPM</small>
                 </span>
-                <span className={styles.strong}>1 кажд.{strongBeat}</span>
+                <span className={styles.strong}>1 каждые {strongBeat}</span>
             </div>
         </div>
     );

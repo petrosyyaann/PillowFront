@@ -23,6 +23,8 @@ const App = () => {
   });
   const [paused, setPaused] = useState<boolean>(false);
   const [results, setResults] = useState<SessionResult[]>([]);
+  const [summarySettings, setSummarySettings] = useState<SessionSettings | null>(null);
+  const [summaryMetroSettings, setSummaryMetroSettings] = useState<MetronomeSettingsValues | null>(null);
 
   const [instruction, setInstruction] = useState<string>("");
   const [camError, setCamError] = useState<boolean>(false);
@@ -42,6 +44,11 @@ const App = () => {
     startRef.current = Date.now();
     setTimeLeft(opts.duration);
     setResults([]);
+    setMetroSettings({
+      bpm: opts.bpm,
+      strongBeat: opts.strongBeat,
+      sound: opts.sound,
+    });
     setSettings(opts);
     setPatientName(opts.patientName);
   };
@@ -54,6 +61,8 @@ const App = () => {
     setSettings(null);
     setResults([]);
     setPatientName('');
+    setSummarySettings(null);
+    setSummaryMetroSettings(null);
   };
 
 
@@ -82,11 +91,15 @@ const App = () => {
         time: elapsed,
         count,
         errors: errorsMap,
+        settings: settings,
+        metroSettings: metroSettings,
       };
       setResults(rs => [...rs, sessionResult]);
+      setSummarySettings(settings);
+      setSummaryMetroSettings(metroSettings);
       setSettings(null);
     }
-  }, [timeLeft, settings, count, errorsMap]);
+  }, [timeLeft, settings, count, errorsMap, metroSettings]);
 
   const onInstruction = (text: string) => setInstruction(text);
   const onCameraError = () => setCamError(true);
@@ -104,9 +117,12 @@ const App = () => {
   }
 
   // После завершения
-  if (!settings && results.length > 0) {
-    return <SummaryReport results={results}
-      onExport={(data) => exportPDF(patientName, data)}
+  if (!settings && results.length > 0 && summarySettings && summaryMetroSettings) {
+    return <SummaryReport
+      results={results}
+      onExport={(data) =>
+        exportPDF(patientName, data, summarySettings, summaryMetroSettings)
+      }
       onReset={handleReset} />;
   }
 
@@ -137,7 +153,7 @@ const App = () => {
             <span className={styles.timeValue}>{timeLeft}s</span>
           </div>
         </div>
-        {!isMobile && (
+        {!isMobile && !settings?.disableMetronome && (
           <Metronome
             paused={paused}
             bpm={metroSettings.bpm}
@@ -156,7 +172,7 @@ const App = () => {
           onCount={onCount}
           onCountError={onCountError}
         />
-        {settings && paused && !isMobile && (
+        {settings && paused && !isMobile && !settings?.disableMetronome && (
           <div className={styles.metronomeEditor}>
             <MetronomeSettings
               values={metroSettings}

@@ -74,11 +74,6 @@ export const MetronomeSettings = ({
                     <option value="tick">Tick</option>
                 </select>
             </div>
-            {disabled && (
-                <button type="submit" className={styles.saveBtn}>
-                    Сохранить
-                </button>
-            )}
         </form>
     );
 };

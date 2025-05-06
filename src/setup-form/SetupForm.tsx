@@ -9,6 +9,7 @@ export interface SessionSettings {
     bpm: number;        // темп метронома
     strongBeat: number; // сильная доля раз в X
     sound: string;      // название звука
+    disableMetronome: boolean; // отключить метроном
 }
 
 interface SetupFormProps {
@@ -23,10 +24,11 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
     const [bpm, setBpm] = useState<number>(60);
     const [strongBeat, setStrongBeat] = useState<number>(4);
     const [sound, setSound] = useState<string>("click");
+    const [disableMetronome, setDisableMetronome] = useState<boolean>(false);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        onStart({ patientName, angle, duration, line, bpm, strongBeat, sound });
+        onStart({ patientName, angle, duration, line, bpm, strongBeat, sound, disableMetronome });
     };
 
     return (
@@ -115,6 +117,16 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
                         <option value="beep">Бип</option>
                         <option value="tick">Тик</option>
                     </select>
+                </div>
+                <div className={styles.field}>
+                    <label className={styles.label}>
+                        <input
+                            type="checkbox"
+                            checked={disableMetronome}
+                            onChange={e => setDisableMetronome(e.target.checked)}
+                        />
+                        Отключить метроном
+                    </label>
                 </div>
             </fieldset>
 

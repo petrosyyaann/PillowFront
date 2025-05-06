@@ -1,3 +1,5 @@
+import { MetronomeSettingsValues } from '../metronome/MetronomeSettings';
+import { SessionSettings } from '../setup-form/SetupForm';
 import styles from './SummaryReport.module.css';
 
 export interface SessionResult {
@@ -5,6 +7,8 @@ export interface SessionResult {
     time: number; // в секундах
     count: number; // число повторений
     errors: Record<string, number>;
+    settings: SessionSettings;
+    metroSettings: MetronomeSettingsValues;
 }
 
 interface SummaryReportProps {

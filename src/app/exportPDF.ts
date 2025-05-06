@@ -3,8 +3,15 @@ import fontkit from '@pdf-lib/fontkit'
 import RobotoTTF from '../fonts/Roboto.ttf'
 import { saveAs } from 'file-saver'
 import type { SessionResult } from '../summary-report/SummaryReport'
+import { MetronomeSettingsValues } from '../metronome/MetronomeSettings'
+import { SessionSettings } from '../setup-form/SetupForm'
 
-export async function exportPDF(patientName: string, data: SessionResult[]) {
+export async function exportPDF(
+    patientName: string,
+    data: SessionResult[],
+    settings: SessionSettings,
+    metroSettings: MetronomeSettingsValues
+) {
     const pdfDoc = await PDFDocument.create()
     pdfDoc.registerFontkit(fontkit)
 
@@ -21,6 +28,20 @@ export async function exportPDF(patientName: string, data: SessionResult[]) {
         size: 14,
     })
     y -= 24
+
+    page.drawText(`Линия: ${settings.line}`, {
+        x: 40,
+        y,
+        font: customFont,
+        size: 12,
+    })
+    y -= 20
+
+    page.drawText(
+        `Метроном — BPM: ${metroSettings.bpm}, сильная доля раз в ${metroSettings.strongBeat}, звук: ${metroSettings.sound}`,
+        { x: 40, y, font: customFont, size: 12 }
+    )
+    y -= 30
     page.drawText('Итоги упражнения', {
         x: 40,
         y,
@@ -55,5 +76,5 @@ export async function exportPDF(patientName: string, data: SessionResult[]) {
 
     const pdfBytes = await pdfDoc.save()
     const blob = new Blob([pdfBytes], { type: 'application/pdf' })
-    saveAs(blob, 'exercise_summary.pdf')
+    saveAs(blob, `Итоги_${patientName}.pdf`)
 }
