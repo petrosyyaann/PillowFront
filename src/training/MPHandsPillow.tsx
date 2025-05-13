@@ -28,10 +28,12 @@ export interface MPHandsPillowProps {
 }
 
 const errorNames: Record<string, string> = {
-  'Старайтесь не поднимать плечо': 'Raise Shoulder',
+  'Старайтесь не поднимать левое плечо': 'Raise Shoulder L',
+  'Старайтесь не поднимать правое плечо': 'Raise Shoulder R',
   'Старайтесь не наклонять голову': 'Tilt Head',
   'Старайтесь не наклоняться': 'Lean Forward',
-  'Старайтесь не отводить локти': 'Elbow Movement',
+  'Старайтесь не отводить левый локоть': 'Elbow Movement L',
+  'Старайтесь не отводить правый локоть': 'Elbow Movement R',
 };
 
 export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
@@ -217,7 +219,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
       drawLandmarks(canvasCtx, [{ x: kneeCenter[0], y: kneeCenter[1] }], {
         color: 'red',
         fillColor: 'red',
-        radius: 5,
+        radius: 12,
       })
 
       const line = lineRef.current
@@ -321,6 +323,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
             rHandAngle > difficultyRef.current) &&
           !exerciseCompletedRef.current
         ) {
+          console.log('зеленый!');
           handRaisedRef.current = true
           stage = getStageText(difficultyRef.current).finishStage
           // setInstructions(stage)
@@ -334,6 +337,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
           (lDistToCenter <= requiredDist && rHandAngle < difficultyRef.current) ||
           (rDistToCenter <= requiredDist && lHandAngle < difficultyRef.current)
         ) {
+          console.log('желтый!');
           counterCondition = true
           // addCount()
           onCount()
