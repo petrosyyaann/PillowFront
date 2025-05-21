@@ -189,9 +189,15 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
         results.poseLandmarks[POSE_LANDMARKS.RIGHT_INDEX],
         true
       )[2]
-      if (results.rightHandLandmarks && results.leftHandLandmarks) {
-        rMiddleFinger = getCoords(results.rightHandLandmarks[10])
-        lMiddleFinger = getCoords(results.leftHandLandmarks[10])
+      if (results.rightHandLandmarks) {
+        rMiddleFinger = getCoords(results.rightHandLandmarks[10]);
+      } else {
+        rMiddleFinger = null
+      }
+      if (results.leftHandLandmarks) {
+        lMiddleFinger = getCoords(results.leftHandLandmarks[10]);
+      } else {
+        lMiddleFinger = null
       }
       lMiddleFingerZ = getCoords(
         results.poseLandmarks[POSE_LANDMARKS.LEFT_INDEX],
