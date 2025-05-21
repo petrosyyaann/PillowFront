@@ -30,6 +30,7 @@ const App = () => {
   const [camError, setCamError] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
   const [errorsMap, setErrorsMap] = useState<Record<string, number>>({});
+  const [shadow, setShadow] = useState<string>("none");
 
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const startRef = useRef<number>(0);
@@ -51,10 +52,12 @@ const App = () => {
     });
     setSettings(opts);
     setPatientName(opts.patientName);
+    setShadow("white")
   };
 
   const handlePauseToggle = () => {
     setPaused(p => !p);
+    setShadow("white")
   };
 
   const handleReset = () => {
@@ -63,6 +66,7 @@ const App = () => {
     setPatientName('');
     setSummarySettings(null);
     setSummaryMetroSettings(null);
+    setShadow("white")
   };
 
 
@@ -162,8 +166,24 @@ const App = () => {
           />
         )}
       </div>
-      <div className={styles.mpContainer}>
+
+      <div
+        className={styles.mpContainer}
+        style={{
+          backgroundColor: shadow,
+          transition: "background-color 0.3s ease"
+        }}
+      >
         <MPHandsPillow
+          onWhite={() =>
+            setShadow("white")
+          }
+          onGreen={() =>
+            setShadow("rgb(0, 161,68)")
+          }
+          onYellow={() =>
+            setShadow("rgb(252, 234, 118)")
+          }
           degree={settings!.angle}
           line={settings!.line}
           paused={paused}

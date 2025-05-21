@@ -25,6 +25,9 @@ export interface MPHandsPillowProps {
   onCameraError: () => void;
   onCount: () => void;
   onCountError: (error: string) => void;
+  onGreen: () => void;
+  onYellow: () => void;
+  onWhite: () => void;
 }
 
 const errorNames: Record<string, string> = {
@@ -43,6 +46,8 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   onInstruction,
   onCount,
   onCountError,
+  onGreen,
+  onYellow,
 }) => {
   const isMobile = useIsMobile();
   const pausedRef = useRef(paused);
@@ -70,7 +75,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
 
   let stage = 'Поднесите руку к точке'
   let isStageCompleted = false
-  const requiredDist = 0.06
+  const requiredDist = 0.6
   let lHandAngle = 0
   let rHandAngle = 0
   const lS = createDeque()
@@ -82,7 +87,6 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   let rAngle = 0
 
   useEffect(() => {
-    console.log(Holistic)
     const holistic = new Holistic({
       locateFile: (file) => `/PillowFront/static/${file}`,
     })
@@ -223,9 +227,9 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
 
       const kneeCenter = [(lKnee[0] + rKnee[0]) / 2, (lKnee[1] + rKnee[1]) / 2]
       drawLandmarks(canvasCtx, [{ x: kneeCenter[0], y: kneeCenter[1] }], {
-        color: 'red',
-        fillColor: 'red',
-        radius: 12,
+        color: 'rgba(255, 0, 0, 0.5)',
+        fillColor: 'rgba(255, 0, 0, 0.5)',
+        radius: 50,
       })
 
       const line = lineRef.current
@@ -329,7 +333,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
             rHandAngle > difficultyRef.current) &&
           !exerciseCompletedRef.current
         ) {
-          console.log('зеленый!');
+          onGreen()
           handRaisedRef.current = true
           stage = getStageText(difficultyRef.current).finishStage
           // setInstructions(stage)
@@ -343,7 +347,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
           (lDistToCenter <= requiredDist && rHandAngle < difficultyRef.current) ||
           (rDistToCenter <= requiredDist && lHandAngle < difficultyRef.current)
         ) {
-          console.log('желтый!');
+          onYellow()
           counterCondition = true
           // addCount()
           onCount()
@@ -357,6 +361,8 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
           handRaisedRef.current = false
         }
       }
+
+      
 
       if (!counterCondition) {
         exerciseCompletedRef.current = false
