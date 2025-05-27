@@ -21,9 +21,11 @@ export interface MPHandsPillowProps {
   degree: number;
   line: number;
   paused: boolean;
+  startArmLeft: boolean;
   onInstruction: (text: string) => void;
   onCameraError: () => void;
-  onCount: () => void;
+  onCountR: () => void;
+  onCountL: () => void;
   onCountError: (error: string) => void;
   onGreen: () => void;
   onYellow: () => void;
@@ -43,8 +45,10 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   degree,
   line,
   paused,
+  startArmLeft, // нужно добавить руку с которой надо начинать
   onInstruction,
-  onCount,
+  onCountR, // засчитываем поднятие правой
+  onCountL, // засчитываем поднятие левой
   onCountError,
   onGreen,
   onYellow,
@@ -52,6 +56,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
   const isMobile = useIsMobile();
   const pausedRef = useRef(paused);
   const doneAudioRef = useRef<HTMLAudioElement>(new Audio(doneSound));
+
   useEffect(() => { pausedRef.current = paused }, [paused]);
 
   const webcamRef = useRef<Webcam>(null)
@@ -75,14 +80,14 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
 
   let stage = 'Поднесите руку к точке'
   let isStageCompleted = false
-  const requiredDist = 0.6
+  const requiredDist = 0.2
   let lHandAngle = 0
   let rHandAngle = 0
   const lS = createDeque()
   const rS = createDeque()
   const countedErrors = useRef<string[]>([])
   const handRaisedRef = useRef(false)
-  const lastHandPositionRef = useRef<'left' | 'right' | null>(null)
+  const lastHandPositionRef = useRef<'left' | 'right'>(startArmLeft ? 'left' : 'right');
   let lAngle = 0
   let rAngle = 0
 
@@ -144,10 +149,10 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
 
     if (!canvasCtx) return
 
-    let lMiddleFinger = [500, 500, 500]
-    let rMiddleFinger = [500, 500, 500]
-    let lMiddleFingerZ = 500
-    let rMiddleFingerZ = 500
+    let lMiddleFinger: number[] | null = [500, 500, 500]
+    let rMiddleFinger: number[] | null = [500, 500, 500]
+    let lMiddleFingerZ: number | null = 500
+    let rMiddleFingerZ: number | null = 500
     let rHip = [1000, 1000]
     let lHip = [1000, 1000]
     let lElbow = [1000, 1000]
@@ -268,8 +273,8 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
       const diffear = Math.abs(l_e_c - r_e_c)
       const diffl = Math.abs(lShoulder[1] - rShoulder[1]) + 0.02
       const diffr = Math.abs(lShoulder[1] - rShoulder[1]) + 0.02
-      const rDistToCenter = calcDist(kneeCenter, rMiddleFinger)
-      const lDistToCenter = calcDist(kneeCenter, lMiddleFinger)
+      const rDistToCenter = calcDist(kneeCenter, rMiddleFinger as number[])
+      const lDistToCenter = calcDist(kneeCenter, lMiddleFinger as number[])
 
       suggestedText = makeSuggestHandsApartWithLine(
         diffl - 0.05,
@@ -349,8 +354,11 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
         ) {
           onYellow()
           counterCondition = true
-          // addCount()
-          onCount()
+          if (lastHandPositionRef.current === 'left') {
+            onCountL();
+          } else {
+            onCountR();
+          }
           doneAudioRef.current.play()
           exerciseCompletedRef.current = true
           // setSuggest('')
@@ -362,7 +370,7 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
         }
       }
 
-      
+
 
       if (!counterCondition) {
         exerciseCompletedRef.current = false

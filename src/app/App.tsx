@@ -28,7 +28,8 @@ const App = () => {
 
   const [instruction, setInstruction] = useState<string>("");
   const [camError, setCamError] = useState<boolean>(false);
-  const [count, setCount] = useState<number>(0);
+  const [countL, setCountL] = useState<number>(0);
+  const [countR, setCountR] = useState<number>(0);
   const [errorsMap, setErrorsMap] = useState<Record<string, number>>({});
   const [shadow, setShadow] = useState<string>("none");
 
@@ -40,7 +41,8 @@ const App = () => {
     setPaused(false);
     setInstruction("");
     setCamError(false);
-    setCount(0);
+    setCountL(0);
+    setCountR(0);
     setErrorsMap({});
     startRef.current = Date.now();
     setTimeLeft(opts.duration);
@@ -93,7 +95,8 @@ const App = () => {
       const sessionResult: SessionResult = {
         angle: settings.angle,
         time: elapsed,
-        count,
+        countL,
+        countR,
         errors: errorsMap,
         settings: settings,
         metroSettings: metroSettings,
@@ -103,11 +106,12 @@ const App = () => {
       setSummaryMetroSettings(metroSettings);
       setSettings(null);
     }
-  }, [timeLeft, settings, count, errorsMap, metroSettings]);
+  }, [timeLeft, settings, countL, countR, errorsMap, metroSettings]);
 
   const onInstruction = (text: string) => setInstruction(text);
   const onCameraError = () => setCamError(true);
-  const onCount = () => setCount(c => c + 1);
+  const onCountL = () => setCountL(c => c + 1);
+  const onCountR = () => setCountR(c => c + 1);
   const onCountError = (err: string) => {
     setErrorsMap(m => ({
       ...m,
@@ -189,7 +193,9 @@ const App = () => {
           paused={paused}
           onInstruction={onInstruction}
           onCameraError={onCameraError}
-          onCount={onCount}
+          startArmLeft={settings!.startArmLeft}
+          onCountL={onCountL}
+          onCountR={onCountR}
           onCountError={onCountError}
         />
         {settings && paused && !isMobile && !settings?.disableMetronome && (

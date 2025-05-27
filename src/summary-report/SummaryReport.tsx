@@ -5,7 +5,8 @@ import styles from './SummaryReport.module.css';
 export interface SessionResult {
     angle: number;
     time: number; // в секундах
-    count: number; // число повторений
+    countL: number;
+    countR: number;
     errors: Record<string, number>;
     settings: SessionSettings;
     metroSettings: MetronomeSettingsValues;
@@ -22,14 +23,18 @@ export const SummaryReport = ({
     onExport,
     onReset,
 }: SummaryReportProps) => {
-    const totalReps = results.reduce((sum, r) => sum + r.count, 0);
+    const totalL = results.reduce((sum, r) => sum + r.countL, 0);
+    const totalR = results.reduce((sum, r) => sum + r.countR, 0);
 
     return (
         <div className={styles.container}>
             <h2 className={styles.title}>Итоги упражнения</h2>
             {results.map(r => (
                 <div key={r.angle} className="result-block">
-                    <h3>{r.angle}°: время {r.time}s, повторений {r.count}</h3>
+                    <h3>
+                        {r.angle}°: время {r.time}s,
+                        Левой {r.countL}, Правой {r.countR}
+                    </h3>
                     <ul>
                         {Object.entries(r.errors).map(([errText, cnt]) => (
                             <li key={errText}>
@@ -40,7 +45,8 @@ export const SummaryReport = ({
                 </div>
             ))}
             <p className={styles.total}>
-                <strong>Общее число повторений:</strong> {totalReps}
+                <strong>Всего повторений левой:</strong> {totalL},&nbsp;
+                <strong>правой:</strong> {totalR}
             </p>
             <div className={styles.containerButton}>
                 <button

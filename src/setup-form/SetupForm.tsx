@@ -10,6 +10,7 @@ export interface SessionSettings {
     strongBeat: number; // сильная доля раз в X
     sound: string;      // название звука
     disableMetronome: boolean; // отключить метроном
+    startArmLeft: boolean;
 }
 
 interface SetupFormProps {
@@ -25,10 +26,11 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
     const [strongBeat, setStrongBeat] = useState<number>(4);
     const [sound, setSound] = useState<string>("click");
     const [disableMetronome, setDisableMetronome] = useState<boolean>(false);
+    const [startArmLeft, setStartArmLeft] = useState<boolean>(true);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        onStart({ patientName, angle, duration, line, bpm, strongBeat, sound, disableMetronome });
+        onStart({ patientName, angle, duration, line, bpm, strongBeat, sound, disableMetronome, startArmLeft });
     };
 
     return (
@@ -68,7 +70,17 @@ export const SetupForm: React.FC<SetupFormProps> = ({ onStart }) => {
                     className={styles.input}
                 />
             </div>
-
+            <div className={styles.field}>
+                <label className={styles.label}>С какой руки начать:</label>
+                <select
+                    value={startArmLeft ? "left" : "right"}
+                    onChange={e => setStartArmLeft(e.target.value === "left")}
+                    className={styles.select}
+                >
+                    <option value="left">Левая</option>
+                    <option value="right">Правая</option>
+                </select>
+            </div>
             <div className={styles.field}>
                 <label className={styles.label}>Линия (0.01–1):</label>
                 <input
