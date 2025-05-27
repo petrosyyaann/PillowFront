@@ -27,7 +27,7 @@ export async function exportPDF(
         font: customFont,
         size: 14,
     })
-    y -= 24
+    y -= 20
 
     page.drawText(
         `Начали с: ${settings.startArmLeft ? 'левой руки' : 'правой руки'}`,
