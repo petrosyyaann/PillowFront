@@ -271,14 +271,12 @@ export const MPHandsPillow: React.FC<MPHandsPillowProps> = ({
       const r_e_c = Math.abs(rEar[0] - mouth[0])
       const diffsh = Math.abs(l_s_c - r_s_c)
       const diffear = Math.abs(l_e_c - r_e_c)
-      const diffl = Math.abs(lShoulder[1] - rShoulder[1]) + 0.02
-      const diffr = Math.abs(lShoulder[1] - rShoulder[1]) + 0.02
       const rDistToCenter = calcDist(kneeCenter, rMiddleFinger as number[])
       const lDistToCenter = calcDist(kneeCenter, lMiddleFinger as number[])
+      const shoulderHeightDiff = lShoulder[1] - rShoulder[1];
 
       suggestedText = makeSuggestHandsApartWithLine(
-        diffl - 0.05,
-        diffr - 0.05,
+        shoulderHeightDiff,
         diffsh,
         diffear,
         lAngle + 20,

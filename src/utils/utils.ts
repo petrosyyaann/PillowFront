@@ -361,8 +361,7 @@ export function makeSuggestHands(
 }
 
 export function makeSuggestHandsApartWithLine(
-    diffl: number,
-    diffr: number,
+    shoulderHeightDiff: number,
     diffsh: number,
     diffear: number,
     lAngle: number,
@@ -390,11 +389,11 @@ export function makeSuggestHandsApartWithLine(
         suggest = 'Старайтесь не сгибать правую руку'
     }
 
-    if (diffl > 0.02) {
-        suggest = 'Старайтесь не поднимать левое плечо'
-    }
-    if (diffr > 0.02) {
-        suggest = 'Старайтесь не поднимать правое плечо'
+    const shoulderThreshold = 0.065
+    if (shoulderHeightDiff > shoulderThreshold) {
+        suggest = 'Старайтесь не поднимать правое плечо' 
+    } else if (shoulderHeightDiff < -shoulderThreshold) {
+        suggest = 'Старайтесь не поднимать левое плечо' 
     }
 
     if (diffear > 0.04 && suggest === '') {
@@ -407,10 +406,6 @@ export function makeSuggestHandsApartWithLine(
         diffear <= 0.02
     ) {
         suggest = 'Старайтесь не наклоняться'
-    }
-
-    if (suggest !== '' && (diffl === -1 || diffr === -1)) {
-        suggest = 'Старайтесь не поднимать другое плечо'
     }
 
     return suggest
